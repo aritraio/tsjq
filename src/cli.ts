@@ -3,6 +3,7 @@ import { createReadStream } from 'node:fs';
 import { JsonError, QueryError, exitCodeFor } from './errors.js';
 import { evaluate } from './evaluator.js';
 import { formatValue } from './formatter.js';
+import { inferType, inferZod } from './infer.js';
 import { parseJsonDocument, readAllStdin, readInputFile, readQueryFromFile } from './io.js';
 import { parse } from './parser.js';
 import { readJsonLinesStreaming } from './io.js';
@@ -14,6 +15,9 @@ Usage: tsjq [opts] '<query>' [file]
   --jsonl            treat input as JSONL
   --strict           throw on null/undefined instead of null
   --from-file <f>    read query from file
+  --infer-type       emit TypeScript type
+  --to-zod           emit Zod schema
+  --type-name <n>    type name for --infer-type (default Root)
   --help             show this help`;
 
 interface CliOpts {
@@ -24,6 +28,9 @@ interface CliOpts {
   jsonl: boolean;
   strict: boolean;
   fromFile: string | undefined;
+  inferType: boolean;
+  toZod: boolean;
+  typeName: string;
   help: boolean;
 }
 
@@ -33,6 +40,9 @@ function parseArgs(argv: string[]): CliOpts {
   let jsonl = false;
   let strict = false;
   let fromFile: string | undefined;
+  let inferTypeFlag = false;
+  let toZod = false;
+  let typeName = 'Root';
   let help = false;
   const positionals: string[] = [];
   for (let i = 0; i < argv.length; i += 1) {
@@ -70,6 +80,21 @@ function parseArgs(argv: string[]): CliOpts {
       i += 1;
       continue;
     }
+    if (a === '--infer-type') {
+      inferTypeFlag = true;
+      continue;
+    }
+    if (a === '--to-zod') {
+      toZod = true;
+      continue;
+    }
+    if (a === '--type-name') {
+      const v = argv[i + 1];
+      if (v === undefined) throw new JsonError('--type-name requires a name', 0);
+      typeName = v;
+      i += 1;
+      continue;
+    }
     if (a.startsWith('--')) {
       throw new JsonError(`unknown option '${a}'`, 0);
     }
@@ -88,7 +113,8 @@ function parseArgs(argv: string[]): CliOpts {
     query = q;
     if (f !== undefined) file = f;
   }
-  return { query, file, compact, indent, jsonl, strict, fromFile, help };
+  if (inferTypeFlag && toZod) throw new JsonError('cannot use --infer-type and --to-zod together', 0);
+  return { query, file, compact, indent, jsonl, strict, fromFile, inferType: inferTypeFlag, toZod, typeName, help };
 }
 
 async function main(): Promise<void> {
@@ -153,6 +179,8 @@ async function main(): Promise<void> {
       process.exitCode = 2;
       return;
     }
+    const wantInfer = opts.inferType || opts.toZod;
+    const collected: unknown[] = [];
     try {
       for await (const { value, lineNo } of readJsonLinesStreaming(inputStream)) {
         let outputs: unknown[];
@@ -164,6 +192,11 @@ async function main(): Promise<void> {
             continue;
           }
           throw e;
+        }
+        if (wantInfer) {
+          collected.push(...outputs);
+          if (collected.length > 100) break;
+          continue;
         }
         for (const out of outputs) {
           process.stdout.write(`${formatValue(out, fmt)}\n`);
@@ -179,6 +212,11 @@ async function main(): Promise<void> {
       if (e instanceof Error) process.stderr.write(`${e.message}\n`);
       process.exitCode = code;
       return;
+    }
+    if (wantInfer) {
+      const target: unknown = collected.length === 1 ? collected[0] : collected;
+      if (opts.inferType) process.stdout.write(`${inferType(target, opts.typeName)}\n`);
+      else process.stdout.write(`${inferZod(target)}\n`);
     }
     return;
   }
@@ -226,6 +264,12 @@ async function main(): Promise<void> {
       return;
     }
     throw e;
+  }
+  if (opts.inferType || opts.toZod) {
+    const target: unknown = outputs.length === 1 ? outputs[0] : outputs;
+    if (opts.inferType) process.stdout.write(`${inferType(target, opts.typeName)}\n`);
+    else process.stdout.write(`${inferZod(target)}\n`);
+    return;
   }
   for (const out of outputs) {
     process.stdout.write(`${formatValue(out, fmt)}\n`);

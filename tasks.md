@@ -78,11 +78,11 @@ git tag -a phase-6-cli -m "MVP CLI: file/stdin, format, exit codes"
 ```
 
 ## `phase-7-infer` — differentiator
-- [ ] `infer.ts`: `inferType` + `inferZod`, key-union merge, `?` + `| null`, array merge, depth cap, sorted keys
-- [ ] Export `inferType` and `inferZod` from `src/index.ts`
-- [ ] CLI `--infer-type [--type-name]`, `--to-zod` wired to query result
-- [ ] Tests: snapshots (nested, mixed array shapes, nullables, empty array, deep cap); emitted type compiles
-- [ ] Done when: `tsjq '.users[0]' api.json --infer-type` pastes into editor and typechecks
+- [x] `infer.ts`: `inferType` + `inferZod`, key-union merge, `?` + `| null`, array merge, depth cap, sorted keys
+- [x] Export `inferType` and `inferZod` from `src/index.ts`
+- [x] CLI `--infer-type [--type-name]`, `--to-zod` wired to query result
+- [x] Tests: snapshots (nested, mixed array shapes, nullables, empty array, deep cap); emitted type compiles
+- [x] Done when: `tsjq '.users[0]' api.json --infer-type` pastes into editor and typechecks
 ```bash
 git tag -a phase-7-infer -m "TS + Zod schema inference"
 ```

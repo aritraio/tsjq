@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`infer > emits zod 1`] = `"z.object({ age: z.number(), name: z.string() })"`;
+
+exports[`infer > infers nested object 1`] = `"type User = { age: number; name: string; };"`;
+
+exports[`infer > merges array of mixed shapes with optional 1`] = `"type Root = { a: number; b?: string; }[];"`;

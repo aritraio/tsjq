@@ -8,6 +8,9 @@ Usage: tsjq [opts] '<query>' [file]
   --jsonl            treat input as JSONL
   --strict           throw on null/undefined instead of null
   --from-file <f>    read query from file
+  --infer-type       emit TypeScript type
+  --to-zod           emit Zod schema
+  --type-name <n>    type name for --infer-type (default Root)
   --help             show this help
 "
 `;
