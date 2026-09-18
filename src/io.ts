@@ -77,3 +77,20 @@ export async function* readJsonLinesStreaming(
     }
   }
 }
+
+export interface RawLine {
+  raw: string;
+  lineNo: number;
+}
+
+export async function* readRawLinesStreaming(
+  stream: NodeJS.ReadableStream,
+): AsyncGenerator<RawLine, void> {
+  const rl = createInterface({ input: stream, crlfDelay: Infinity });
+  let lineNo = 0;
+  for await (const raw of rl) {
+    lineNo += 1;
+    if (raw.trim() === '') continue;
+    yield { raw, lineNo };
+  }
+}

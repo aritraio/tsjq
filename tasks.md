@@ -88,10 +88,10 @@ git tag -a phase-7-infer -m "TS + Zod schema inference"
 ```
 
 ## `phase-8-streaming` — JSONL hardening
-- [ ] `--jsonl` / `.jsonl`: `readline` per-line parse→eval→print, O(1 line); per-line errors to stderr with line no, continue
-- [ ] Document: single-doc big-array JSON NOT streaming (out of scope)
-- [ ] RSS regression test: 100k-line JSONL child-process run under budget; 1M variant behind `TSJQ_BIG=1`
-- [ ] Done when: streaming test green, memory flat
+- [x] `--jsonl` / `.jsonl`: `readline` per-line parse→eval→print, O(1 line); per-line errors to stderr with line no, continue
+- [x] Document: single-doc big-array JSON NOT streaming (out of scope)
+- [x] RSS regression test: 100k-line JSONL child-process run under budget; 1M variant behind `TSJQ_BIG=1`
+- [x] Done when: streaming test green, memory flat
 ```bash
 git tag -a phase-8-streaming -m "JSONL constant-memory mode + RSS guard"
 ```

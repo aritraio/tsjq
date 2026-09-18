@@ -6,7 +6,7 @@ import { formatValue } from './formatter.js';
 import { inferType, inferZod } from './infer.js';
 import { parseJsonDocument, readAllStdin, readInputFile, readQueryFromFile } from './io.js';
 import { parse } from './parser.js';
-import { readJsonLinesStreaming } from './io.js';
+import { readRawLinesStreaming } from './io.js';
 
 const HELP = `tsjq — Typed JSON Query Library + CLI
 Usage: tsjq [opts] '<query>' [file]
@@ -182,7 +182,15 @@ async function main(): Promise<void> {
     const wantInfer = opts.inferType || opts.toZod;
     const collected: unknown[] = [];
     try {
-      for await (const { value, lineNo } of readJsonLinesStreaming(inputStream)) {
+      for await (const { raw, lineNo } of readRawLinesStreaming(inputStream)) {
+        let value: unknown;
+        try {
+          value = JSON.parse(raw) as unknown;
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : String(e);
+          process.stderr.write(`JSON parse error at line ${lineNo}: ${msg}\n`);
+          continue;
+        }
         let outputs: unknown[];
         try {
           outputs = [...evaluate(ast, value, evalOpts)];
