@@ -57,12 +57,12 @@ git tag -a phase-4-parser -m "recursive-descent parser with spans"
 ```
 
 ## `phase-5-evaluator` — AST → outputs
-- [ ] `evaluate(): Generator` + `query()` collector; `Pipe` = `yield*` flatMap
-- [ ] `select` + comparisons `> < >= <= == !=`; semantics frozen: missing/OOB→`null`, `strict`→throw, depth guard
-- [ ] `builtins.ts`: at least `select`; stretch `length/keys/map` flagged separately
-- [ ] Export `query()` collector from `src/index.ts`
-- [ ] Tests: 20+ evaluator cases (fan-out, pipe chain, null/OOB/negative/strict)
-- [ ] Done when: `query({items:[{price:10},{price:30}]}, '.items[] | select(.price > 20)')` → `[{price:30}]`
+- [x] `evaluate(): Generator` + `query()` collector; `Pipe` = `yield*` flatMap
+- [x] `select` + comparisons `> < >= <= == !=`; semantics frozen: missing/OOB→`null`, `strict`→throw, depth guard
+- [x] `builtins.ts`: at least `select`; stretch `length/keys/map` flagged separately
+- [x] Export `query()` collector from `src/index.ts`
+- [x] Tests: 20+ evaluator cases (fan-out, pipe chain, null/OOB/negative/strict)
+- [x] Done when: `query({items:[{price:10},{price:30}]}, '.items[] | select(.price > 20)')` → `[{price:30}]`
 ```bash
 git tag -a phase-5-evaluator -m "generator evaluator + select"
 ```
