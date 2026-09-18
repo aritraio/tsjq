@@ -1,0 +1,8 @@
+{
+  "users": [
+    { "name": "Ada", "age": 36, "tags": ["admin", "owner"] },
+    { "name": "Bo", "age": 28, "tags": [] }
+  ],
+  "config": { "db": { "host": "localhost", "port": 5432 } },
+  "items": [{ "price": 10 }, { "price": 30 }]
+}

@@ -1,0 +1,3 @@
+{"user": {"name": "Ada"}, "level": "info", "price": 10}
+{"user": {"name": "Bo"}, "level": "error", "price": 30}
+{"user": {"name": "Cy"}, "level": "info", "price": 25}

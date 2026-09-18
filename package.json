@@ -1,0 +1,38 @@
+{
+  "name": "tsjq",
+  "version": "0.0.0",
+  "description": "Typed JSON query library + CLI (mini-jq in TypeScript)",
+  "type": "module",
+  "bin": {
+    "tsjq": "dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./cli": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . && prettier --check ."
+  },
+  "keywords": [
+    "json",
+    "jq",
+    "typescript",
+    "cli"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^26.6.1",
+    "eslint": "^10.10.0",
+    "prettier": "^3.9.8",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  }
+}

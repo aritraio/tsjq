@@ -7,13 +7,13 @@ git init && git add . && git commit -m "chore: initial idea + docs"
 ```
 
 ## `phase-0-setup` — repo boots & library skeleton
-- [ ] `npm init -y`, deps: `typescript vitest tsx @types/node eslint prettier`
-- [ ] `tsconfig.json`: `strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes, noEmitOnError, verbatimModuleSyntax, module nodenext, target es2022, declaration: true, outDir: "dist"`
-- [ ] `package.json`: `type: "module"`, `bin: { "tsjq": "dist/cli.js" }`, `exports: { ".": "./dist/index.js", "./cli": "./dist/cli.js" }`, `files: ["dist"]`, scripts: `dev`, `build`, `test`, `typecheck`, `lint`
-- [ ] Stubs: `src/index.ts` (library exports stub), `src/cli.ts` (with `#!/usr/bin/env node` shebang + `--help` stub), `src/*.ts` empty stubs
-- [ ] Test fixtures: create `tests/fixtures/nested.json` and `tests/fixtures/sample.jsonl`
-- [ ] Empty `src/*.ts` + `tests/` compile: `tsc --noEmit` clean
-- [ ] Done when: `npx tsx src/cli.ts --help` prints stub (exit 0) and `npm run build` generates `dist/` with `.d.ts`
+- [x] `npm init -y`, deps: `typescript vitest tsx @types/node eslint prettier`
+- [x] `tsconfig.json`: `strict, noUncheckedIndexedAccess, exactOptionalPropertyTypes, noEmitOnError, verbatimModuleSyntax, module nodenext, target es2022, declaration: true, outDir: "dist"`
+- [x] `package.json`: `type: "module"`, `bin: { "tsjq": "dist/cli.js" }`, `exports: { ".": "./dist/index.js", "./cli": "./dist/cli.js" }`, `files: ["dist"]`, scripts: `dev`, `build`, `test`, `typecheck`, `lint`
+- [x] Stubs: `src/index.ts` (library exports stub), `src/cli.ts` (with `#!/usr/bin/env node` shebang + `--help` stub), `src/*.ts` empty stubs
+- [x] Test fixtures: create `tests/fixtures/nested.json` and `tests/fixtures/sample.jsonl`
+- [x] Empty `src/*.ts` + `tests/` compile: `tsc --noEmit` clean
+- [x] Done when: `npx tsx src/cli.ts --help` prints stub (exit 0) and `npm run build` generates `dist/` with `.d.ts`
 ```bash
 git tag -a phase-0-setup -m "skeleton, strict tsconfig, index stub, help stub"
 ```
