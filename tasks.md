@@ -19,10 +19,10 @@ git tag -a phase-0-setup -m "skeleton, strict tsconfig, index stub, help stub"
 ```
 
 ## `phase-1-types-errors` — shared vocabulary
-- [ ] `src/types.ts`: `JsonValue, Token, ASTNode, Span, EvalOpts`
-- [ ] `src/errors.ts`: `QueryError(msg,pos,hint)+render`, `JsonError(msg,line)`, exit-code mapping (`0` ok, `1` query error, `2` IO/JSON error)
-- [ ] Tests: caret snapshot, `expected ']' at col 7` shape, exit 1 vs 2 mapping
-- [ ] Done when: `vitest run tests/errors.test.ts` green
+- [x] `src/types.ts`: `JsonValue, Token, ASTNode, Span, EvalOpts`
+- [x] `src/errors.ts`: `QueryError(msg,pos,hint)+render`, `JsonError(msg,line)`, exit-code mapping (`0` ok, `1` query error, `2` IO/JSON error)
+- [x] Tests: caret snapshot, `expected ']' at col 7` shape, exit 1 vs 2 mapping
+- [x] Done when: `vitest run tests/errors.test.ts` green
 ```bash
 git tag -a phase-1-types-errors -m "JsonValue, Token, AST, QueryError spans"
 ```

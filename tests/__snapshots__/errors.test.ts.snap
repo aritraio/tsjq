@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`QueryError > shapes the canonical missing-bracket error 1`] = `
+"QueryError at col 7: expected ']'
+.users[
+       ^ expected ']'"
+`;
