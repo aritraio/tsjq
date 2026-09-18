@@ -28,12 +28,12 @@ git tag -a phase-1-types-errors -m "JsonValue, Token, AST, QueryError spans"
 ```
 
 ## `phase-2-typed-get` — the "Typed" proof (do not skip ahead)
-- [ ] Runtime `get()` walk: dot/index/negative/`[]`, missing→`null`
-- [ ] Types `SimplePath<T>`, `PathValue<T,P>` (objects → arrays → `[]`; depth-capped recursion guard)
-- [ ] Export `get`, `SimplePath`, `PathValue` from `src/index.ts`
-- [ ] `tests/typed.test.ts`: `expectTypeOf` infers `string/number/element`; bad path `@ts-expect-error`
-- [ ] Manual: VS Code autocomplete screenshot/check
-- [ ] Done when: `tsc --noEmit` + type tests green; demo `get(data,'.users[0].name'): string`; `dist/index.d.ts` valid
+- [x] Runtime `get()` walk: dot/index/negative/`[]`, missing→`null`
+- [x] Types `SimplePath<T>`, `PathValue<T,P>` (objects → arrays → `[]`; depth-capped recursion guard)
+- [x] Export `get`, `SimplePath`, `PathValue` from `src/index.ts`
+- [x] `tests/typed.test.ts`: `expectTypeOf` infers `string/number/element`; bad path `@ts-expect-error`
+- [x] Manual: VS Code autocomplete screenshot/check
+- [x] Done when: `tsc --noEmit` + type tests green; demo `get(data,'.users[0].name'): string`; `dist/index.d.ts` valid
 ```bash
 git tag -a phase-2-typed-get -m "typed get with template-literal paths"
 ```
