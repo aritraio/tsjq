@@ -68,11 +68,11 @@ git tag -a phase-5-evaluator -m "generator evaluator + select"
 ```
 
 ## `phase-6-cli` — usable tool
-- [ ] `io.ts`: stdin/file/`--from-file`, `isTTY`, `JsonError` lines
-- [ ] `formatter.ts`: `--compact/--indent`, multi-output one-per-line
-- [ ] `cli.ts`: `tsjq [opts] '<q>' [file]`, flags: `--compact --indent --jsonl --strict --from-file --help`, exits 0/1/2
-- [ ] Tests: CLI snapshots (stdout/stderr/exit 0 ok, exit 1 query error, exit 2 invalid JSON or missing file); help text frozen
-- [ ] Done when: MVP acceptance list in `docs/mvp.md` all pass
+- [x] `io.ts`: stdin/file/`--from-file`, `isTTY`, `JsonError` lines
+- [x] `formatter.ts`: `--compact/--indent`, multi-output one-per-line
+- [x] `cli.ts`: `tsjq [opts] '<q>' [file]`, flags: `--compact --indent --jsonl --strict --from-file --help`, exits 0/1/2
+- [x] Tests: CLI snapshots (stdout/stderr/exit 0 ok, exit 1 query error, exit 2 invalid JSON or missing file); help text frozen
+- [x] Done when: MVP acceptance list in `docs/mvp.md` all pass
 ```bash
 git tag -a phase-6-cli -m "MVP CLI: file/stdin, format, exit codes"
 ```

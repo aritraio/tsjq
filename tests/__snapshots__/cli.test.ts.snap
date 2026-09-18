@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`cli > --help prints and exits 0 1`] = `
+"tsjq — Typed JSON Query Library + CLI
+Usage: tsjq [opts] '<query>' [file]
+  --compact          compact output
+  --indent <n>       indent spaces (default 2)
+  --jsonl            treat input as JSONL
+  --strict           throw on null/undefined instead of null
+  --from-file <f>    read query from file
+  --help             show this help
+"
+`;
