@@ -39,10 +39,10 @@ git tag -a phase-2-typed-get -m "typed get with template-literal paths"
 ```
 
 ## `phase-3-lexer` — query string → tokens
-- [ ] `lex()` covers `. ident ."quoted" [n] [-n] [] [a:b] | ( ) , : strings numbers ops`, `pos` on every token
-- [ ] Errors: bad char, unterminated `[`/string with col + hint
-- [ ] Tests: ~10 exact token+pos cases + 3 error cases
-- [ ] Done when: `vitest run tests/lexer.test.ts` green
+- [x] `lex()` covers `. ident ."quoted" [n] [-n] [] [a:b] | ( ) , : strings numbers ops`, `pos` on every token
+- [x] Errors: bad char, unterminated `[`/string with col + hint
+- [x] Tests: ~10 exact token+pos cases + 3 error cases
+- [x] Done when: `vitest run tests/lexer.test.ts` green
 ```bash
 git tag -a phase-3-lexer -m "span-accurate lexer"
 ```
