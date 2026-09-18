@@ -68,7 +68,8 @@ function parseArgs(argv: string[]): CliOpts {
       const v = argv[i + 1];
       if (v === undefined) throw new JsonError('--indent requires a number', 0);
       const n = Number(v);
-      if (!Number.isInteger(n) || n < 0 || n > 8) throw new JsonError('--indent must be integer 0..8', 0);
+      if (!Number.isInteger(n) || n < 0 || n > 8)
+        throw new JsonError('--indent must be integer 0..8', 0);
       indent = n;
       i += 1;
       continue;
@@ -113,8 +114,21 @@ function parseArgs(argv: string[]): CliOpts {
     query = q;
     if (f !== undefined) file = f;
   }
-  if (inferTypeFlag && toZod) throw new JsonError('cannot use --infer-type and --to-zod together', 0);
-  return { query, file, compact, indent, jsonl, strict, fromFile, inferType: inferTypeFlag, toZod, typeName, help };
+  if (inferTypeFlag && toZod)
+    throw new JsonError('cannot use --infer-type and --to-zod together', 0);
+  return {
+    query,
+    file,
+    compact,
+    indent,
+    jsonl,
+    strict,
+    fromFile,
+    inferType: inferTypeFlag,
+    toZod,
+    typeName,
+    help,
+  };
 }
 
 async function main(): Promise<void> {

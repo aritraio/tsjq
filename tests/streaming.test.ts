@@ -4,13 +4,21 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-function runDist(args: string[], stdin?: string, timeoutMs = 60000): { status: number | null; stdout: string; stderr: string } {
+function runDist(
+  args: string[],
+  stdin?: string,
+  timeoutMs = 60000,
+): { status: number | null; stdout: string; stderr: string } {
   const r = spawnSync('node', ['dist/cli.js', ...args], {
     input: stdin,
     encoding: 'utf8',
     timeout: timeoutMs,
   });
-  return { status: r.status, stdout: r.stdout?.toString() ?? '', stderr: r.stderr?.toString() ?? '' };
+  return {
+    status: r.status,
+    stdout: r.stdout?.toString() ?? '',
+    stderr: r.stderr?.toString() ?? '',
+  };
 }
 
 function makeJsonl(n: number): string {
@@ -64,10 +72,14 @@ describe('streaming', () => {
 
   it('100k-line JSONL stays under RSS budget', () => {
     const file = makeJsonl(100_000);
-    const r = spawnSync('/usr/bin/time', ['-l', 'node', 'dist/cli.js', '.i', '--jsonl', '--compact', file], {
-      encoding: 'utf8',
-      timeout: 120000,
-    });
+    const r = spawnSync(
+      '/usr/bin/time',
+      ['-l', 'node', 'dist/cli.js', '.i', '--jsonl', '--compact', file],
+      {
+        encoding: 'utf8',
+        timeout: 120000,
+      },
+    );
     const status = r.status;
     const stdout = r.stdout?.toString() ?? '';
     const stderr = r.stderr?.toString() ?? '';
@@ -83,10 +95,14 @@ describe('streaming', () => {
   it('1M-line JSONL stays <80MB (TSJQ_BIG=1 only)', () => {
     if (process.env['TSJQ_BIG'] !== '1') return;
     const file = makeJsonl(1_000_000);
-    const r = spawnSync('/usr/bin/time', ['-l', 'node', 'dist/cli.js', '.i', '--jsonl', '--compact', file], {
-      encoding: 'utf8',
-      timeout: 300000,
-    });
+    const r = spawnSync(
+      '/usr/bin/time',
+      ['-l', 'node', 'dist/cli.js', '.i', '--jsonl', '--compact', file],
+      {
+        encoding: 'utf8',
+        timeout: 300000,
+      },
+    );
     expect(r.status).toBe(0);
     const rss = parseMaxRssBytes(r.stderr?.toString() ?? '');
     if (rss !== undefined) {

@@ -31,7 +31,7 @@ describe('parser', () => {
     } catch (e) {
       expect(e).toBeInstanceOf(QueryError);
       const qe = e as QueryError;
-      expect(qe.message).toContain("expected");
+      expect(qe.message).toContain('expected');
       expect(qe.render('.users[')).toContain('col 7');
       expect(qe.render('.users[')).toMatchSnapshot();
     }

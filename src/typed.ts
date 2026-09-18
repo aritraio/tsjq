@@ -1,40 +1,41 @@
 type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8];
 
-export type Tail<T, D extends number = 8> = D extends 0
-  ? ''
-  : '' | TailNonEmpty<T, D>;
+export type Tail<T, D extends number = 8> = D extends 0 ? '' : '' | TailNonEmpty<T, D>;
 
-type TailNonEmpty<T, D extends number> = NonNullable<T> extends readonly (infer E)[]
-  ? `[${number}]${Tail<E, Prev[D] & number>}` | `[]${Tail<E, Prev[D] & number>}`
-  : NonNullable<T> extends object
-    ? {
-        [K in keyof NonNullable<T> & string]: `.${K}${Tail<NonNullable<T>[K], Prev[D] & number>}`;
-      }[keyof NonNullable<T> & string]
-    : never;
+type TailNonEmpty<T, D extends number> =
+  NonNullable<T> extends readonly (infer E)[]
+    ? `[${number}]${Tail<E, Prev[D] & number>}` | `[]${Tail<E, Prev[D] & number>}`
+    : NonNullable<T> extends object
+      ? {
+          [K in keyof NonNullable<T> & string]: `.${K}${Tail<NonNullable<T>[K], Prev[D] & number>}`;
+        }[keyof NonNullable<T> & string]
+      : never;
 
 export type SimplePath<T, D extends number = 8> = D extends 0
   ? '.'
-  :
-      | '.'
-      | (NonNullable<T> extends readonly (infer E)[]
-          ? `.[${number}]${Tail<E, Prev[D] & number>}` | `.[]${Tail<E, Prev[D] & number>}`
-          : NonNullable<T> extends object
-            ? {
-                [K in keyof NonNullable<T> & string]: `.${K}${Tail<NonNullable<T>[K], Prev[D] & number>}`;
-              }[keyof NonNullable<T> & string]
-            : never);
+  : | '.'
+    | (NonNullable<T> extends readonly (infer E)[]
+        ? `.[${number}]${Tail<E, Prev[D] & number>}` | `.[]${Tail<E, Prev[D] & number>}`
+        : NonNullable<T> extends object
+          ? {
+              [
+                K in keyof NonNullable<T> & string
+              ]: `.${K}${Tail<NonNullable<T>[K], Prev[D] & number>}`;
+            }[keyof NonNullable<T> & string]
+          : never);
 
-type BracketValue<T, Inside extends string, After extends string> = NonNullable<T> extends readonly (infer E)[]
-  ? Inside extends ''
-    ? After extends ''
-      ? E[]
-      : Array<PathValue<E, After>>
-    : Inside extends `${number}`
+type BracketValue<T, Inside extends string, After extends string> =
+  NonNullable<T> extends readonly (infer E)[]
+    ? Inside extends ''
       ? After extends ''
-        ? E
-        : PathValue<E, After>
-      : never
-  : never;
+        ? E[]
+        : Array<PathValue<E, After>>
+      : Inside extends `${number}`
+        ? After extends ''
+          ? E
+          : PathValue<E, After>
+        : never
+    : never;
 
 type FieldValue<T, F extends string, Rest extends string> = F extends keyof NonNullable<T>
   ? PathValue<NonNullable<T>[F], Rest>
@@ -62,18 +63,17 @@ type PathValueNonNull<T, P extends string> = P extends ''
         ? BracketValue<T, Inside, After>
         : never;
 
-export type PathValue<T, P extends string> = Extract<T, null | undefined> extends never
-  ? PathValueNonNull<T, P>
-  : P extends '.'
-    ? T
-    : P extends ''
+export type PathValue<T, P extends string> =
+  Extract<T, null | undefined> extends never
+    ? PathValueNonNull<T, P>
+    : P extends '.'
       ? T
-      : PathValueNonNull<NonNullable<T>, P> | Extract<T, null | undefined>;
+      : P extends ''
+        ? T
+        : PathValueNonNull<NonNullable<T>, P> | Extract<T, null | undefined>;
 
 type PathSegment =
-  | { type: 'field'; name: string }
-  | { type: 'index'; index: number }
-  | { type: 'wildcard' };
+  { type: 'field'; name: string } | { type: 'index'; index: number } | { type: 'wildcard' };
 
 function parseTypedPath(path: string): PathSegment[] {
   if (path === '.' || path === '') return [];

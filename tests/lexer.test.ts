@@ -87,12 +87,28 @@ describe('lexer', () => {
   });
 
   it('lexes slice colon', () => {
-    expect(kinds('.[1:3]')).toEqual(['dot', 'lbracket', 'number', 'colon', 'number', 'rbracket', 'eof']);
+    expect(kinds('.[1:3]')).toEqual([
+      'dot',
+      'lbracket',
+      'number',
+      'colon',
+      'number',
+      'rbracket',
+      'eof',
+    ]);
   });
 
   it('lexes parens comma star', () => {
     expect(kinds('map(., *)')).toContain('star');
-    expect(kinds('f(a, b)')).toEqual(['ident', 'lparen', 'ident', 'comma', 'ident', 'rparen', 'eof']);
+    expect(kinds('f(a, b)')).toEqual([
+      'ident',
+      'lparen',
+      'ident',
+      'comma',
+      'ident',
+      'rparen',
+      'eof',
+    ]);
   });
 
   it('errors on bad character', () => {

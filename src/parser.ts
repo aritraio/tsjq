@@ -48,7 +48,11 @@ function parsePipe(cur: Cursor): ASTNode {
     cur.next();
     const right = parseCompare(cur);
     if (right.kind === 'root') {
-      throw new QueryError('unexpected token after pipe', cur.peek().pos, 'expected filter after pipe');
+      throw new QueryError(
+        'unexpected token after pipe',
+        cur.peek().pos,
+        'expected filter after pipe',
+      );
     }
     const span: Span = combine(left.span, right.span);
     left = { kind: 'pipe', left, right, span };
@@ -57,7 +61,9 @@ function parsePipe(cur: Cursor): ASTNode {
 }
 
 function isCompareOp(text: string): text is CompareOp {
-  return text === '>' || text === '<' || text === '>=' || text === '<=' || text === '==' || text === '!=';
+  return (
+    text === '>' || text === '<' || text === '>=' || text === '<=' || text === '==' || text === '!='
+  );
 }
 
 function parseCompare(cur: Cursor): ASTNode {
@@ -116,7 +122,12 @@ function parsePostfix(cur: Cursor): ASTNode {
         }
         if (nxt.kind === 'number' || nxt.kind === 'colon') {
           const sliceOrIndex = parseBracketContent(cur, lb.pos);
-          node = { kind: 'pipe', left: node, right: sliceOrIndex, span: combine(node.span, sliceOrIndex.span) };
+          node = {
+            kind: 'pipe',
+            left: node,
+            right: sliceOrIndex,
+            span: combine(node.span, sliceOrIndex.span),
+          };
           continue;
         }
         throw new QueryError("expected number, ':', or ']'", nxt.pos, "expected ']'");
@@ -181,7 +192,11 @@ function parsePrimary(cur: Cursor): ASTNode {
   if (t.kind === 'ident') {
     if (t.text === 'true' || t.text === 'false') {
       cur.next();
-      return { kind: 'literal', value: t.text === 'true', span: spanOf(t.pos, t.pos + t.text.length) };
+      return {
+        kind: 'literal',
+        value: t.text === 'true',
+        span: spanOf(t.pos, t.pos + t.text.length),
+      };
     }
     if (t.text === 'null') {
       cur.next();

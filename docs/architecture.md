@@ -30,6 +30,7 @@ Single-doc JSON mode: one JSON.parse; no streaming claim.
 ## 3. Module Contracts
 
 ### 3.1 `types.ts` — shared vocabulary
+
 ```ts
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonObject = { [k: string]: JsonValue };
@@ -37,37 +38,62 @@ export type JsonArray = JsonValue[];
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
 
 export type TokenKind =
-  | 'dot' | 'ident' | 'lbracket' | 'rbracket' | 'number'
-  | 'star' | 'pipe' | 'lparen' | 'rparen' | 'comma' | 'colon'
-  | 'string' | 'op' | 'eof';
-export interface Token { kind: TokenKind; text: string; pos: number; }
+  | 'dot'
+  | 'ident'
+  | 'lbracket'
+  | 'rbracket'
+  | 'number'
+  | 'star'
+  | 'pipe'
+  | 'lparen'
+  | 'rparen'
+  | 'comma'
+  | 'colon'
+  | 'string'
+  | 'op'
+  | 'eof';
+export interface Token {
+  kind: TokenKind;
+  text: string;
+  pos: number;
+}
 
 export type ASTNode =
   | { kind: 'root' }
   | { kind: 'field'; name: string; span: Span }
-  | { kind: 'index'; index: number; span: Span }      // negative allowed
-  | { kind: 'wildcard' }                              // []
-  | { kind: 'slice'; start?: number; end?: number }   // stretch
+  | { kind: 'index'; index: number; span: Span } // negative allowed
+  | { kind: 'wildcard' } // []
+  | { kind: 'slice'; start?: number; end?: number } // stretch
   | { kind: 'pipe'; left: ASTNode; right: ASTNode }
-  | { kind: 'call'; name: string; args: ASTNode[] }   // select, map, length, keys
+  | { kind: 'call'; name: string; args: ASTNode[] } // select, map, length, keys
   | { kind: 'literal'; value: JsonValue }
-  | { kind: 'compare'; op: '>'|'<'|'>='|'<='|'=='|'!='; left: ASTNode; right: ASTNode };
-export interface Span { start: number; end: number; }
+  | { kind: 'compare'; op: '>' | '<' | '>=' | '<=' | '==' | '!='; left: ASTNode; right: ASTNode };
+export interface Span {
+  start: number;
+  end: number;
+}
 ```
+
 Rules: `Token.pos` = column offset in query string. Every fallible node keeps `span` for caret errors. `strict` TS: no `any`, inputs are `unknown` until narrowed.
 
 ### 3.2 `lexer.ts` — `string -> Token[]`
+
 Pure function `lex(q: string): Token[]`. Single pass, tracks `pos`. Responsibilities: `.` `|` `[]` `[n]` `[-n]` `[a:b]` identifiers, quoted keys `."a b"`, strings `'..'`/`".."`, numbers, comparison ops, parens/commas. Throws `QueryError(msg, pos, hint)` on bad char / unterminated bracket/string. Tested by exact token arrays including `pos`.
 
 ### 3.3 `parser.ts` — `Token[] -> ASTNode`
+
 Recursive descent, precedence: `pipe (lowest) > compare > postfix (.a, [n], []) > primary (call, literal, paren)`.
+
 ```ts
 parsePipe(): left=parsePostfix(); while peek=='pipe' { consume; right=parsePipe(); left={kind:'pipe',left,right} }
 ```
+
 `select(.price > 20)` parses as `call('select',[compare(field(price),>,20)])`. Errors: `expected ']' at col 7`, `unexpected token '|'`, unclosed `(`. Every throw includes span. No evaluation here.
 
 ### 3.4 `evaluator.ts` — `AST x unknown -> Generator<unknown>`
+
 Core semantic: jq-style 0-to-N fan-out.
+
 ```ts
 export function* evaluate(node: ASTNode, input: unknown): Generator<unknown, void> {
   switch (node.kind) {
@@ -81,13 +107,17 @@ export function* evaluate(node: ASTNode, input: unknown): Generator<unknown, voi
 }
 export function query(data: unknown, q: string): unknown[] { return [...evaluate(parse(lex(q)), data)]; }
 ```
+
 Why generators: `.items[] | select(...)` naturally fans out without intermediate arrays; downstream short-circuits. Cartesian behavior falls out of nested `yield*` — document it, don't fight it. Guards: `opts.strict`, `opts.depthLimit` (default ~100), circular-reference guard via ancestor `Set` for pathological inputs.
 
 ### 3.5 `builtins.ts`
+
 `select(pred)`: filters — evaluates pred per input, keeps truthy. `map(f)`: collects `f` over array or single into array. `length`: string/array/object/number semantics. `keys`: sorted object keys. `sort_by(path)`: stable sort (stretch). All take `EvalOpts`, all pure.
 
 ### 3.6 `typed.ts` — the only "TypeSafe" part
+
 Runtime is trivial (split path, walk); types do the work:
+
 ```ts
 export type SimplePath<T> =
   T extends readonly (infer E)[] ? `[${number}]${SimplePath<E>}` | `[]${SimplePath<E>}` | ''
@@ -98,16 +128,20 @@ export function get<T, P extends SimplePath<T>>(data: T, path: P): PathValue<T, 
   // runtime: tokenize /\.([A-Za-z_$][\w$]*)|\[(-?\d+)?\]/g, walk with null → null
 }
 ```
+
 Scope: dot + index + `[]` only. `[]` over `E[]` yields `E` (if downstream continues) — decide and freeze: `get(data,'.users[]')` returns `User` union flattened? Document choice. Negative index resolved at runtime, typed as `E | undefined` under `noUncheckedIndexedAccess`. Anything else is a compile error directing users to `query()`.
 
 ### 3.7 `infer.ts` — `unknown -> string`
+
 ```ts
 export function inferType(value: unknown, name?: string): string; // "type Root = {...}"
-export function inferZod(value: unknown): string;                 // "z.object({...})"
+export function inferZod(value: unknown): string; // "z.object({...})"
 ```
+
 Algorithm: `merge(shapes[])` over array elements / JSONL sample (cap e.g. 100 lines). Objects: union key set; missing keys → optional `?`; `null` present → `| null`. Arrays: element union; empty → `unknown[]`. Primitives: `typeof` mapping, `number` → `number` (do not overfit to literal unless `as const` requested). Depth cap (default 10) → `unknown`. Sort keys for determinism. Snapshot-test outputs.
 
 ### 3.8 `io.ts` / `formatter.ts` / `cli.ts` / `errors.ts`
+
 - `io.ts`: `readAllStdin(): Promise<string>`, `readFile(p)`, `async *readJsonLines(stream)` via `node:readline`. Detects `--jsonl` or `.jsonl` extension; per-line `JSON.parse` with `JsonError(lineNo)`. Never buffers whole JSONL.
 - `formatter.ts`: `format(v, {compact, indent, color})` → `JSON.stringify(v,null,indent)`; multi-output (from `[]`) prints one doc per line in compact-JSONL style or pretty-separated — freeze choice early.
 - `cli.ts`: manual arg parse (no deps): `tsjq [opts] '<query>' [file]`. Flags: `--compact --indent n --jsonl --from-file f --strict --infer-type --to-zod --type-name X --help`. Resolves stdin-vs-file via `process.stdin.isTTY`. Maps errors → exit codes.
@@ -115,13 +149,14 @@ Algorithm: `merge(shapes[])` over array elements / JSONL sample (cap e.g. 100 li
 
 ## 4. Key Decisions & Tradeoffs
 
-| Decision | Why | Cost |
-|---|---|---|
-| No deps | Easy install, minimal boot | Hand-rolled args, no colors lib |
-| Generators for eval | Lazy fan-out, jq fidelity for subset | Callers must remember `query()` collects; document |
-| Typed subset only | Full language untypeable | Two APIs to teach (`get` vs `query`) |
-| JSONL-only streaming | Honest; SAX parser out of scope | Big single-array JSON still OOMs — documented |
-| No jq benchmark goal | Node boot 30–80 ms unwinnable | Portfolio story is typing+inference, not speed |
+| Decision             | Why                                  | Cost                                               |
+| -------------------- | ------------------------------------ | -------------------------------------------------- |
+| No deps              | Easy install, minimal boot           | Hand-rolled args, no colors lib                    |
+| Generators for eval  | Lazy fan-out, jq fidelity for subset | Callers must remember `query()` collects; document |
+| Typed subset only    | Full language untypeable             | Two APIs to teach (`get` vs `query`)               |
+| JSONL-only streaming | Honest; SAX parser out of scope      | Big single-array JSON still OOMs — documented      |
+| No jq benchmark goal | Node boot 30–80 ms unwinnable        | Portfolio story is typing+inference, not speed     |
 
 ## 5. Testing Strategy
+
 `vitest --typecheck`: unit (lexer exact tokens, parser AST shapes, evaluator 20+ cases incl. `null`/OOB/negative), type tests (`expectTypeOf(get(data,'.a'))` + `@ts-expect-error`), infer snapshots, CLI snapshots (stdout/stderr/exit code), RSS regression (spawn CLI on generated 100k-line JSONL, assert RSS < threshold; 1M-line variant behind env flag).

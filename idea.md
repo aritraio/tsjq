@@ -8,6 +8,7 @@
 > (was incorrectly listed under `01-beginner`).
 
 ## 1. Overview & Objective
+
 - A zero-dependency TypeScript **library-first** tool with two surfaces:
   1. **Typed library** `get<T, P>(data, path)` — compile-time checked paths
      with autocomplete + inferred return type for the simple path subset
@@ -25,6 +26,7 @@
   not raw throughput.
 
 ## 2. Key Language Concepts Practiced
+
 - Core TypeScript: `strict` + `noUncheckedIndexedAccess` +
   `exactOptionalPropertyTypes`, discriminated unions for `Token`/`ASTNode`,
   narrowing, `unknown` vs `any` discipline, generics.
@@ -40,6 +42,7 @@
   0-to-N fan-out (`yield*` flatMap chaining), immutable transforms.
 
 ## 3. Functional Requirements
+
 - **Core library (Must-Have):**
   ```ts
   import { get, query } from 'tsjq';
@@ -72,6 +75,7 @@
   explicitly out of scope. Document this; do not claim "JSON streaming".
 
 ## 4. Suggested Architecture & Modules
+
 - File breakdown:
   ```
   src/
@@ -106,6 +110,7 @@
 - Data flow: `argv/stdin -> text -> JSON.parse (or per-line parse for .jsonl) -> lexer -> parser -> evaluator (lazy generator, pipe = flatMap via yield*) -> formatter -> stdout`. `typed.ts` bypasses lexer/parser entirely (direct property walk) — no runtime query parsing for `get()`.
 
 ## 5. Step-by-Step Implementation Roadmap
+
 - **Milestone 1 — Typed `get` + dot-only CLI (the honest MVP):** `npm init`,
   `tsc --init --strict`, `vitest` + `tsx`; implement `types.ts` + `typed.ts`
   (`SimplePath`/`PathValue` for `.a.b` + `[n]` only) with `expectTypeOf`
@@ -127,6 +132,7 @@
   dry-run, ESLint + Prettier + CI.
 
 ## 6. Testing, Verification & Tooling
+
 - Commands: strictest `tsc`: `tsc --strict --noUncheckedIndexedAccess --exactOptionalPropertyTypes --noEmitOnError`. Dev: `npx tsx src/cli.ts '.users[0].name' data.json`. Build: `tsc -p tsconfig.json && node dist/cli.js '.a' data.json`. Type tests: `vitest --typecheck` + `expectTypeOf`.
 - Debug/perf: `vitest`, `node --inspect`, `process.memoryUsage()` RSS guard in JSONL test. `clinic.js`/`0x` optional for own hotspots only — do not publish "vs jq" benchmarks as a goal; if measured, report Node boot cost honestly.
 - Sample cases:

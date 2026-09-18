@@ -12,7 +12,7 @@ describe('QueryError', () => {
     expect(lines[2]).toBe(`       ^ did you mean ']'?`);
   });
 
-  it("shapes the canonical missing-bracket error", () => {
+  it('shapes the canonical missing-bracket error', () => {
     const err = new QueryError("expected ']'", 7, "expected ']'");
     expect(err.pos).toBe(7);
     expect(err.exitCode).toBe(1);

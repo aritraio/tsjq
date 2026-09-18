@@ -39,7 +39,8 @@ export function* evaluate(
       if (isObject(input) && node.name in input) {
         const v: unknown = (input as Record<string, unknown>)[node.name];
         if (v === undefined) {
-          if (resolved.strict) throw new QueryError(`missing field '${node.name}'`, node.span.start);
+          if (resolved.strict)
+            throw new QueryError(`missing field '${node.name}'`, node.span.start);
           yield null;
           return;
         }
@@ -57,13 +58,15 @@ export function* evaluate(
         let idx = node.index;
         if (idx < 0) idx = input.length + idx;
         if (idx < 0 || idx >= input.length) {
-          if (resolved.strict) throw new QueryError(`index ${node.index} out of bounds`, node.span.start);
+          if (resolved.strict)
+            throw new QueryError(`index ${node.index} out of bounds`, node.span.start);
           yield null;
           return;
         }
         const v: unknown = input[idx];
         if (v === undefined) {
-          if (resolved.strict) throw new QueryError(`index ${node.index} out of bounds`, node.span.start);
+          if (resolved.strict)
+            throw new QueryError(`index ${node.index} out of bounds`, node.span.start);
           yield null;
           return;
         }
@@ -146,7 +149,8 @@ function* evalCall(
       throw new QueryError('select() expects exactly one argument', node.span.start);
     }
     const pred = args[0];
-    if (pred === undefined) throw new QueryError('select() expects exactly one argument', node.span.start);
+    if (pred === undefined)
+      throw new QueryError('select() expects exactly one argument', node.span.start);
     const result = firstValue(evaluate(pred, input, opts, depth + 1));
     if (isTruthyValue(result)) yield input;
     return;

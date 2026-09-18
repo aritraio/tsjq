@@ -10,10 +10,10 @@ A zero-dependency TypeScript library + CLI for querying JSON. Think "mini-jq wit
 
 ## Why not just use jq?
 
-| If you need... | Use |
-|---|---|
-| Fastest text-stream filtering in shell loops | `jq` / `gojq` (C/Go, no V8 boot cost) |
-| Interactive exploration | `fx`, `jless` |
+| If you need...                                | Use                                            |
+| --------------------------------------------- | ---------------------------------------------- |
+| Fastest text-stream filtering in shell loops  | `jq` / `gojq` (C/Go, no V8 boot cost)          |
+| Interactive exploration                       | `fx`, `jless`                                  |
 | Typed access + inference inside a TS codebase | `tsjq` — `get()` + `--infer-type` / `--to-zod` |
 
 Node costs 30–80 ms boot. `cat urls.txt | xargs -n1 tsjq` will always lose to `jq`. `tsjq` wins when you consume unknown JSON in TypeScript and want compiler-checked paths and generated types.

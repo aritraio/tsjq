@@ -1,6 +1,7 @@
 # MVP Definition — tsjq
 
 ## Goal
+
 Prove the two claims in one demo: (1) `get()` is compile-time safe, (2) CLI answers real queries without scripts. Everything else is stretch.
 
 ## In Scope (must work for v1 demo)
@@ -18,9 +19,11 @@ Prove the two claims in one demo: (1) `get()` is compile-time safe, (2) CLI answ
 4. **JSONL read path**: `--jsonl` reads line-by-line, constant memory. Single-doc JSON uses plain `JSON.parse`.
 
 ## Out of Scope for MVP
+
 `map`/`keys`/`length`/`sort_by`/`group_by`, slicing `.[1:3]`, arithmetic, string interpolation, `--from-file`, REPL, completions, colors, single-doc JSON streaming, perf flamegraphs, publish to npm (use `npx tsx`).
 
 ## Acceptance Checklist (demo script must pass)
+
 - [ ] `npx tsx src/cli.ts '.user.name' <<< '{"user":{"name":"Ada"}}'` → `"Ada"`
 - [ ] `query({items:[{price:10},{price:30}]}, '.items[] | select(.price > 20)')` → `[{price:30}]`
 - [ ] `get(data, '.users[0].email')` fails `tsc` with readable error
@@ -32,4 +35,5 @@ Prove the two claims in one demo: (1) `get()` is compile-time safe, (2) CLI answ
 - [ ] `... | tsjq '.x' --infer-type` emits compilable `type Root = ...`
 
 ## What "Done" Looks Like
+
 A 3-minute demo: show `get()` autocomplete + error in editor, run 4 CLI queries (dot, index, `[]`, pipe+select), pipe one result into `--infer-type`, paste the emitted type back into code and show `get()` completing against it. That loop is the whole portfolio story.
