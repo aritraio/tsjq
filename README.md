@@ -84,17 +84,17 @@ const adults = query(data, '.users[] | select(.age > 20)');
 
 ```
 src/
-  typed.ts evaluator.ts lexer.ts parser.ts builtins.ts
+  index.ts typed.ts evaluator.ts lexer.ts parser.ts builtins.ts
   infer.ts cli.ts io.ts formatter.ts errors.ts types.ts
 tests/
   typed.test.ts lexer.test.ts parser.test.ts evaluator.test.ts
   infer.test.ts cli.test.ts fixtures/
 docs/
   architecture.md implementation-plan.md mvp.md walkthrough.md
-tags.md explanation.md idea.md
+tasks.md explanation.md idea.md
 ```
 
-See `docs/architecture.md` for module contracts, `docs/mvp.md` for the minimal slice, `docs/implementation-plan.md` for build order, `docs/walkthrough.md` for traced examples, `tags.md` for phase checklists, `explanation.md` for interview prep.
+See `docs/architecture.md` for module contracts, `docs/mvp.md` for the minimal slice, `docs/implementation-plan.md` for build order, `docs/walkthrough.md` for traced examples, `tasks.md` for phase checklists, `explanation.md` for interview prep.
 
 ## Limitations (by design)
 
