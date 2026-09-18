@@ -1,0 +1,181 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`parser > errors on missing ']' 1`] = `
+"QueryError at col 7: expected number, ':', or ']'
+.users[
+       ^ expected ']'"
+`;
+
+exports[`parser > parses .a.b as pipe chain 1`] = `
+{
+  "kind": "pipe",
+  "left": {
+    "kind": "pipe",
+    "left": {
+      "kind": "root",
+      "span": {
+        "end": 1,
+        "start": 0,
+      },
+    },
+    "right": {
+      "kind": "field",
+      "name": "a",
+      "span": {
+        "end": 2,
+        "start": 1,
+      },
+    },
+    "span": {
+      "end": 2,
+      "start": 0,
+    },
+  },
+  "right": {
+    "kind": "field",
+    "name": "b",
+    "span": {
+      "end": 4,
+      "start": 2,
+    },
+  },
+  "span": {
+    "end": 4,
+    "start": 0,
+  },
+}
+`;
+
+exports[`parser > parses .arr[-1] 1`] = `
+{
+  "kind": "pipe",
+  "left": {
+    "kind": "pipe",
+    "left": {
+      "kind": "root",
+      "span": {
+        "end": 1,
+        "start": 0,
+      },
+    },
+    "right": {
+      "kind": "field",
+      "name": "arr",
+      "span": {
+        "end": 4,
+        "start": 1,
+      },
+    },
+    "span": {
+      "end": 4,
+      "start": 0,
+    },
+  },
+  "right": {
+    "index": -1,
+    "kind": "index",
+    "span": {
+      "end": 8,
+      "start": 4,
+    },
+  },
+  "span": {
+    "end": 8,
+    "start": 0,
+  },
+}
+`;
+
+exports[`parser > parses .items[] | select(.price > 20) 1`] = `
+{
+  "kind": "pipe",
+  "left": {
+    "kind": "pipe",
+    "left": {
+      "kind": "pipe",
+      "left": {
+        "kind": "root",
+        "span": {
+          "end": 1,
+          "start": 0,
+        },
+      },
+      "right": {
+        "kind": "field",
+        "name": "items",
+        "span": {
+          "end": 6,
+          "start": 1,
+        },
+      },
+      "span": {
+        "end": 6,
+        "start": 0,
+      },
+    },
+    "right": {
+      "kind": "wildcard",
+      "span": {
+        "end": 8,
+        "start": 6,
+      },
+    },
+    "span": {
+      "end": 8,
+      "start": 0,
+    },
+  },
+  "right": {
+    "args": [
+      {
+        "kind": "compare",
+        "left": {
+          "kind": "pipe",
+          "left": {
+            "kind": "root",
+            "span": {
+              "end": 19,
+              "start": 18,
+            },
+          },
+          "right": {
+            "kind": "field",
+            "name": "price",
+            "span": {
+              "end": 24,
+              "start": 19,
+            },
+          },
+          "span": {
+            "end": 24,
+            "start": 18,
+          },
+        },
+        "op": ">",
+        "right": {
+          "kind": "literal",
+          "span": {
+            "end": 29,
+            "start": 27,
+          },
+          "value": 20,
+        },
+        "span": {
+          "end": 29,
+          "start": 18,
+        },
+      },
+    ],
+    "kind": "call",
+    "name": "select",
+    "span": {
+      "end": 30,
+      "start": 11,
+    },
+  },
+  "span": {
+    "end": 30,
+    "start": 0,
+  },
+}
+`;

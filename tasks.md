@@ -48,10 +48,10 @@ git tag -a phase-3-lexer -m "span-accurate lexer"
 ```
 
 ## `phase-4-parser` — tokens → AST
-- [ ] Recursive descent `pipe > compare > postfix > primary`; `span` on nodes
-- [ ] `select(pred)`, literals, parens; errors `expected X at col N`
-- [ ] Tests: AST snapshots for `.a.b`, `.arr[-1]`, `.items[] | select(.price > 20)`, 3 error snapshots
-- [ ] Done when: parser snapshots green, no eval code yet
+- [x] Recursive descent `pipe > compare > postfix > primary`; `span` on nodes
+- [x] `select(pred)`, literals, parens; errors `expected X at col N`
+- [x] Tests: AST snapshots for `.a.b`, `.arr[-1]`, `.items[] | select(.price > 20)`, 3 error snapshots
+- [x] Done when: parser snapshots green, no eval code yet
 ```bash
 git tag -a phase-4-parser -m "recursive-descent parser with spans"
 ```
